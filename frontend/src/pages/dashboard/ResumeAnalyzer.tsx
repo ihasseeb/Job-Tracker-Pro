@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { ResumeAnalysis } from '../../types';
+import type { ResumeAnalysis } from '../types';
 
 const ResumeAnalyzer = () => {
   const [resumeText, setResumeText] = useState('');
@@ -13,6 +13,8 @@ const ResumeAnalyzer = () => {
     setLoading(true);
     setResult(null);
 
+    // Phase 3 mein — yahan FastAPI /ai/resume-match ko call karenge
+    // Abhi ke liye — fake delay + fake result (UI test karne ke liye)
     setTimeout(() => {
       setResult({
         matchScore: 78,
@@ -38,6 +40,7 @@ const ResumeAnalyzer = () => {
       </p>
 
       <div className="grid grid-cols-2 gap-6 mb-6">
+        {/* Resume Input */}
         <div className="flex flex-col gap-2">
           <label className="font-mono text-xs uppercase tracking-wide text-muted">
             Your Resume
@@ -51,6 +54,7 @@ const ResumeAnalyzer = () => {
           />
         </div>
 
+        {/* Job Description Input */}
         <div className="flex flex-col gap-2">
           <label className="font-mono text-xs uppercase tracking-wide text-muted">
             Job Description
@@ -65,6 +69,7 @@ const ResumeAnalyzer = () => {
         </div>
       </div>
 
+      {/* Analyze Button */}
       <button
         onClick={handleAnalyze}
         disabled={!resumeText || !jobDescription || loading}
@@ -73,6 +78,7 @@ const ResumeAnalyzer = () => {
         {loading ? 'Analyzing...' : 'Analyze Match'}
       </button>
 
+      {/* Loading state */}
       {loading && (
         <div className="mt-8 flex items-center gap-3">
           <div className="w-4 h-4 border-2 border-signal border-t-transparent rounded-full animate-spin" />
@@ -82,9 +88,11 @@ const ResumeAnalyzer = () => {
         </div>
       )}
 
+      {/* Results */}
       {result && !loading && (
         <div className="mt-8 flex flex-col gap-6">
 
+          {/* Match Score */}
           <div className="bg-surface border border-white/5 rounded-xl p-6 flex items-center gap-6">
             <div className="relative w-24 h-24 flex items-center justify-center">
               <span className="font-display text-3xl font-bold text-go">
@@ -101,32 +109,41 @@ const ResumeAnalyzer = () => {
             </div>
           </div>
 
+          {/* Matched Skills */}
           <div className="bg-surface border border-white/5 rounded-xl p-5">
             <h3 className="font-mono text-xs uppercase tracking-wide text-go mb-3">
               ✓ Matched Skills
             </h3>
             <div className="flex flex-wrap gap-2">
               {result.matchedSkills.map((skill) => (
-                <span key={skill} className="font-mono text-xs bg-go/10 text-go border border-go/20 px-3 py-1.5 rounded-full">
+                <span
+                  key={skill}
+                  className="font-mono text-xs bg-go/10 text-go border border-go/20 px-3 py-1.5 rounded-full"
+                >
                   {skill}
                 </span>
               ))}
             </div>
           </div>
 
+          {/* Missing Skills */}
           <div className="bg-surface border border-white/5 rounded-xl p-5">
             <h3 className="font-mono text-xs uppercase tracking-wide text-stop mb-3">
               ✕ Missing Skills
             </h3>
             <div className="flex flex-wrap gap-2">
               {result.missingSkills.map((skill) => (
-                <span key={skill} className="font-mono text-xs bg-stop/10 text-stop border border-stop/20 px-3 py-1.5 rounded-full">
+                <span
+                  key={skill}
+                  className="font-mono text-xs bg-stop/10 text-stop border border-stop/20 px-3 py-1.5 rounded-full"
+                >
                   {skill}
                 </span>
               ))}
             </div>
           </div>
 
+          {/* Suggestions */}
           <div className="bg-surface border border-white/5 rounded-xl p-5">
             <h3 className="font-mono text-xs uppercase tracking-wide text-signal mb-3">
               💡 Suggestions

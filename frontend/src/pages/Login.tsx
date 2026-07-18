@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
 
 const stats = [
   { label: "Applications tracked", value: "12,400+" },
@@ -7,6 +9,27 @@ const stats = [
 ];
 
 const Login = () => {
+  // Local Form Component States
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  // Zustand state and hooks integration
+  const { login, isLoading, error } = useAuthStore();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // API trigger through global auth action
+      await login({ email, password });
+      // Successful auth goes directly to pipeline control dashboard
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login verification intercept failed:", err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-ink font-body grid grid-cols-1 lg:grid-cols-2">
       {/* Left — Branding Panel */}
@@ -69,7 +92,14 @@ const Login = () => {
             Pick up your applications right where you left them.
           </p>
 
-          <form className="mt-10 space-y-5">
+          {/* Error Container Overlay */}
+          {error && (
+            <div className="bg-stop/10 border border-stop/20 text-stop text-xs font-mono rounded-lg p-3 mt-6">
+              ⚠️ {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <div>
               <label className="block font-mono text-[11px] tracking-widest text-muted uppercase mb-2">
                 Email
@@ -77,6 +107,8 @@ const Login = () => {
               <input
                 type="email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className="w-full bg-surface border border-white/10 rounded-lg px-4 py-3 text-paper placeholder-muted/60 outline-none focus:border-signal transition"
               />
@@ -97,6 +129,8 @@ const Login = () => {
               <input
                 type="password"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full bg-surface border border-white/10 rounded-lg px-4 py-3 text-paper placeholder-muted/60 outline-none focus:border-signal transition"
               />
@@ -104,9 +138,10 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-signal text-ink font-medium py-3 rounded-full hover:brightness-110 transition"
+              disabled={isLoading}
+              className="w-full bg-signal text-ink font-medium py-3 rounded-full hover:brightness-110 transition disabled:opacity-50 disabled:cursor-not-allowed uppercase font-mono tracking-wider text-xs font-bold"
             >
-              Log in
+              {isLoading ? "Signing In..." : "Log in"}
             </button>
           </form>
 
@@ -124,7 +159,8 @@ const Login = () => {
 
           <p className="text-muted text-sm text-center mt-8">
             Don't have an account?{" "}
-            <Link to="/register" className="text-signal hover:underline">
+            {/* Note: AppRoute.tsx handles path='/signup', switching link direction to avoid broken routing context */}
+            <Link to="/signup" className="text-signal hover:underline">
               Create one
             </Link>
           </p>

@@ -4,11 +4,13 @@ import dotenv from "dotenv";
 import connectDB from "./src/config/db";
 import authRoutes from "./src/routes/authRoute";
 import applicationRoutes from "./src/routes/applicationRoutes";
+import { errorHandler } from "./src/middleware/errorHandler";
 
 dotenv.config();
 connectDB();
 
 const app: Application = express();
+app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 // Middleware

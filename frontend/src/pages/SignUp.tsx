@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
 
 const features = [
   "AI resume match scoring against any job post",
@@ -8,6 +10,28 @@ const features = [
 ];
 
 const Signup = () => {
+  // Controlled input states
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  // Zustand authentication states mapping
+  const { signup, isLoading, error } = useAuthStore();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // Triggering backend register flow through Zustand store action
+      await signup({ name, email, password });
+      // Redirecting user straight to dashboard view upon successful auth pipeline creation
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Pipeline registration phase intercepted error:", err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-ink font-body grid grid-cols-1 lg:grid-cols-2">
       {/* Left — Branding Panel */}
@@ -68,7 +92,14 @@ const Signup = () => {
             Track applications, match resumes, and prep for interviews — free.
           </p>
 
-          <form className="mt-10 space-y-5">
+          {/* Dynamic Error Banner Output */}
+          {error && (
+            <div className="bg-stop/10 border border-stop/20 text-stop text-xs font-mono rounded-lg p-3 mt-6">
+              ⚠️ {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <div>
               <label className="block font-mono text-[11px] tracking-widest text-muted uppercase mb-2">
                 Name
@@ -76,6 +107,8 @@ const Signup = () => {
               <input
                 type="text"
                 required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
                 className="w-full bg-surface border border-white/10 rounded-lg px-4 py-3 text-paper placeholder-muted/60 outline-none focus:border-signal transition"
               />
@@ -88,6 +121,8 @@ const Signup = () => {
               <input
                 type="email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className="w-full bg-surface border border-white/10 rounded-lg px-4 py-3 text-paper placeholder-muted/60 outline-none focus:border-signal transition"
               />
@@ -100,6 +135,9 @@ const Signup = () => {
               <input
                 type="password"
                 required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 6 characters"
                 className="w-full bg-surface border border-white/10 rounded-lg px-4 py-3 text-paper placeholder-muted/60 outline-none focus:border-signal transition"
               />
@@ -107,9 +145,10 @@ const Signup = () => {
 
             <button
               type="submit"
-              className="w-full bg-signal text-ink font-medium py-3 rounded-full hover:brightness-110 transition"
+              disabled={isLoading}
+              className="w-full bg-signal text-ink font-medium py-3 rounded-full hover:brightness-110 transition disabled:opacity-50 disabled:cursor-not-allowed uppercase font-mono tracking-wider text-xs font-bold"
             >
-              Create Account
+              {isLoading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 

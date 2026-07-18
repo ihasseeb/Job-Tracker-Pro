@@ -1,39 +1,70 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import type { Application } from '../../types';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import type { Application } from "../../types";
 
 // Fake data — Phase 2 mein backend se aayega
 const fakeApplications: Application[] = [
-  { id: '1', company: 'Google', role: 'Frontend Developer', status: 'interview', appliedDate: '2026-07-10' },
-  { id: '2', company: 'Systems Ltd', role: 'Full Stack Developer', status: 'applied', appliedDate: '2026-07-12' },
-  { id: '3', company: 'DevCorp', role: 'React Developer', status: 'offer', appliedDate: '2026-07-08' },
-  { id: '4', company: 'TechHub', role: 'Backend Developer', status: 'rejected', appliedDate: '2026-07-05' },
-  { id: '5', company: 'Meta', role: 'React Native Developer', status: 'applied', appliedDate: '2026-07-14' },
+  {
+    id: "1",
+    company: "Google",
+    role: "Frontend Developer",
+    status: "interview",
+    appliedDate: "2026-07-10",
+  },
+  {
+    id: "2",
+    company: "Systems Ltd",
+    role: "Full Stack Developer",
+    status: "applied",
+    appliedDate: "2026-07-12",
+  },
+  {
+    id: "3",
+    company: "DevCorp",
+    role: "React Developer",
+    status: "offer",
+    appliedDate: "2026-07-08",
+  },
+  {
+    id: "4",
+    company: "TechHub",
+    role: "Backend Developer",
+    status: "rejected",
+    appliedDate: "2026-07-05",
+  },
+  {
+    id: "5",
+    company: "Meta",
+    role: "React Native Developer",
+    status: "applied",
+    appliedDate: "2026-07-14",
+  },
 ];
 
 const statusStyles = {
-  applied: 'bg-white/5 text-muted border-white/10',
-  interview: 'bg-signal/10 text-signal border-signal/20',
-  offer: 'bg-go/10 text-go border-go/20',
-  rejected: 'bg-stop/10 text-stop border-stop/20',
+  applied: "bg-white/5 text-muted border-white/10",
+  interview: "bg-signal/10 text-signal border-signal/20",
+  offer: "bg-go/10 text-go border-go/20",
+  rejected: "bg-stop/10 text-stop border-stop/20",
 };
 
 const Applications = () => {
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  const filters = ['all', 'applied', 'interview', 'offer', 'rejected'];
+  const filters = ["all", "applied", "interview", "offer", "rejected"];
 
   const filteredApps = fakeApplications.filter((app) => {
     const matchSearch =
       app.company.toLowerCase().includes(search.toLowerCase()) ||
       app.role.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === 'all' || app.status === statusFilter;
+    const matchStatus = statusFilter === "all" || app.status === statusFilter;
     return matchSearch && matchStatus;
   });
 
   return (
     <div className="p-8">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-2xl font-bold text-paper">
           Applications
@@ -46,6 +77,7 @@ const Applications = () => {
         </Link>
       </div>
 
+      {/* Search */}
       <input
         type="text"
         placeholder="Search by company or role..."
@@ -54,6 +86,7 @@ const Applications = () => {
         className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 font-mono text-sm text-paper outline-none focus:border-signal mb-4 placeholder:text-muted/50"
       />
 
+      {/* Status Filters */}
       <div className="flex gap-2 mb-6 flex-wrap">
         {filters.map((status) => (
           <button
@@ -61,8 +94,8 @@ const Applications = () => {
             onClick={() => setStatusFilter(status)}
             className={`font-mono text-xs uppercase px-4 py-2 rounded-full border transition ${
               statusFilter === status
-                ? 'bg-signal text-ink border-signal'
-                : 'bg-white/5 text-muted border-white/10 hover:border-white/30'
+                ? "bg-signal text-ink border-signal"
+                : "bg-white/5 text-muted border-white/10 hover:border-white/30"
             }`}
           >
             {status}
@@ -70,6 +103,7 @@ const Applications = () => {
         ))}
       </div>
 
+      {/* Applications List */}
       {filteredApps.length === 0 ? (
         <div className="text-center py-16">
           <p className="font-mono text-sm text-muted">
@@ -84,7 +118,9 @@ const Applications = () => {
               className="bg-surface border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-signal/30 transition"
             >
               <div>
-                <h3 className="font-display font-bold text-paper">{app.role}</h3>
+                <h3 className="font-display font-bold text-paper">
+                  {app.role}
+                </h3>
                 <p className="font-mono text-sm text-muted">{app.company}</p>
               </div>
 
@@ -103,6 +139,7 @@ const Applications = () => {
         </div>
       )}
 
+      {/* Results count */}
       <p className="font-mono text-xs text-muted mt-4">
         {filteredApps.length} of {fakeApplications.length} applications
       </p>

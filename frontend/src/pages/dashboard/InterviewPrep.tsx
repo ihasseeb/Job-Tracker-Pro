@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { InterviewQuestion } from "../types";
+import type { InterviewQuestion } from "../../types";
 
 const categoryStyles = {
   technical: "bg-signal/10 text-signal border-signal/20",

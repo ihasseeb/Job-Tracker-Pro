@@ -14,7 +14,7 @@ const LandingNavbar = () => {
           to="/login"
           className="text-sm text-muted hover:text-paper transition px-4 py-2"
         >
-          Sign In
+          Log In
         </Link>
         <Link
           to="/register"
